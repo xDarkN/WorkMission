@@ -1,0 +1,19 @@
+version: '3'
+services:
+  web:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    depends_on:
+      - mongo
+
+  mongo:
+    build:
+      context: ./mongodb
+      dockerfile: Dockerfile
+    ports:
+      - '27017:27017'
+    volumes:
+      - ./mongodb/init-data.js:/docker-entrypoint-initdb.d/init-data.js
