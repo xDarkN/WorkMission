@@ -1,5 +1,9 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'jenkins/agent:latest'
+        }
+    }
 
     stages {
         stage('Checkout') {
