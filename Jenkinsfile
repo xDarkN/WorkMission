@@ -1,7 +1,10 @@
 pipeline {
     agent {
-        label 'docker-agent'
-        credentials 'jenkins-docker-agent' // Use the name of the SSH key credential you created
+        label "docker-slave"
+    }
+
+    environment {
+        DOCKER_REGISTRY_CREDENTIALS = credentials('docker-hub-credentials')
     }
 
     stages {
@@ -14,7 +17,7 @@ pipeline {
         stage('Build and Push Docker Images') {
             steps {
                 script {
-                    docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
+                    docker.withRegistry('https://registry.hub.docker.com', DOCKER_REGISTRY_CREDENTIALS) {
                         def webImage = docker.build("xdarkn/repo:workmission-web-latest", "./app")
                         def mongoImage = docker.build("xdarkn/repo:workmission-mongo-latest", "./mongodb")
 
@@ -28,7 +31,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
+                    docker.withRegistry('https://registry.hub.docker.com', DOCKER_REGISTRY_CREDENTIALS) {
                         def webImage = docker.image("xdarkn/repo:workmission-web-latest")
                         def mongoImage = docker.image("xdarkn/repo:workmission-mongo-latest")
 
@@ -40,4 +43,3 @@ pipeline {
         }
     }
 }
-
