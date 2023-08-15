@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'jenkins/agent:latest'
+            image 'docker:20.10'
             args '-v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
@@ -12,6 +12,21 @@ pipeline {
                 checkout scm
             }
         }
+
+        stage('Build and Push Docker Images') {
+            steps {
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
+                        def webImage = docker.build("xdarkn/repo:workmission-web-latest", "./app")
+                        def mongoImage = docker.build("xdarkn/repo:workmission-mongo-latest", "./mongodb")
+
+                        webImage.push()
+                        mongoImage.push()
+                    }
+                }
+            }
+        }
+
         stage('Deploy') {
             steps {
                 script {
