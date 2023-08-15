@@ -11,14 +11,7 @@ pipeline {
                 checkout scm
             }
         }
-        
-	stage('Install Docker') {
-            steps {
-                sh 'curl -fsSL https://get.docker.com -o get-docker.sh'
-                sh 'sh get-docker.sh'
-            }
-        }
-        
+
         stage('Build and Push Docker Images') {
             steps {
                 script {
