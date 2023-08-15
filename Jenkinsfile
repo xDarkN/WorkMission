@@ -1,9 +1,6 @@
 pipeline {
     agent {
-        docker {
-            image 'docker:20.10'
-            args '-v /var/run/docker.sock:/var/run/docker.sock'
-        }
+        label 'docker-agent' // Use the label you assigned to the Docker agent template
     }
 
     stages {
