@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        label 'docker-agent' // Use the label you assigned to the Docker agent template
+        label 'docker'
     }
 
     stages {
