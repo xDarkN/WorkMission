@@ -1,10 +1,7 @@
 pipeline {
-    agent {
-        docker {
-            image 'jenkins/inbound-agent:latest'
-            args '-v /var/run/docker.sock:/var/run/docker.sock'
-        }
-    }
+  agent {
+    docker { image 'node:16-alpine' }
+  }
 
     stages {
         stage('Checkout') {
