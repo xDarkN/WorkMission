@@ -1,6 +1,6 @@
 pipeline {
   agent {
-    docker { image 'node:16-alpine' }
+    docker { image 'jenkins/agent' }
   }
 
     stages {
@@ -12,6 +12,9 @@ pipeline {
 
         stage('Build and Push Docker Images') {
             steps {
+              agent {
+    docker { image 'jenkins/agent' }
+  }
                 script {
                     docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
                         def webImage = docker.build("xdarkn/repo:workmission-web-latest", "./app")
@@ -26,6 +29,9 @@ pipeline {
 
         stage('Deploy') {
             steps {
+              agent {
+    docker { image 'jenkins/agent' }
+  }
                 script {
                     docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
                         def webImage = docker.image("xdarkn/repo:workmission-web-latest")
