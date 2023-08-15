@@ -1,6 +1,7 @@
 pipeline {
     agent {
-        label 'docker'
+        label 'docker-agent'
+        credentials 'jenkins-docker-agent' // Use the name of the SSH key credential you created
     }
 
     stages {
