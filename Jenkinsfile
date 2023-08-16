@@ -3,21 +3,7 @@ pipeline {
         label "jenkins-slave"
     }
 
-    environment {
-        DOCKER_REGISTRY_CREDENTIALS = credentials('docker-hub-credentials')
-    }
-
     stages {
-        stage('Check Credentials') {
-            steps {
-                script {
-                    def credentials = DOCKER_REGISTRY_CREDENTIALS
-                    echo "Username: ${credentials.username}"
-                    echo "Password: ${credentials.password}"
-                }
-            }
-        }
-
         stage('Checkout') {
             steps {
                 checkout scm
@@ -27,7 +13,8 @@ pipeline {
         stage('Build and Push Docker Images') {
             steps {
                 script {
-                    docker.withRegistry('https://registry.hub.docker.com', DOCKER_REGISTRY_CREDENTIALS) {
+                    def registryCredentials = credentials('docker-hub-credentials')
+                    docker.withRegistry('https://registry.hub.docker.com', registryCredentials) {
                         def webImage = docker.build("xdarkn/repo:workmission-web-latest", "./app")
                         def mongoImage = docker.build("xdarkn/repo:workmission-mongo-latest", "./mongodb")
 
@@ -41,7 +28,8 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    docker.withRegistry('https://registry.hub.docker.com', DOCKER_REGISTRY_CREDENTIALS) {
+                    def registryCredentials = credentials('docker-hub-credentials')
+                    docker.withRegistry('https://registry.hub.docker.com', registryCredentials) {
                         def webImage = docker.image("xdarkn/repo:workmission-web-latest")
                         def mongoImage = docker.image("xdarkn/repo:workmission-mongo-latest")
 
