@@ -39,6 +39,7 @@ pipeline {
 
                         sh 'docker-compose down'
                         sh 'docker-compose up -d'
+                        curl http://localhost:3000
                     }
                 }
             }
