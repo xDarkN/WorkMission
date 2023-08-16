@@ -11,7 +11,9 @@ pipeline {
         stage('Check Credentials') {
             steps {
                 script {
-                    echo "Credentials: ${DOCKER_REGISTRY_CREDENTIALS.username}:${DOCKER_REGISTRY_CREDENTIALS.password}"
+                    def credentials = DOCKER_REGISTRY_CREDENTIALS
+                    echo "Username: ${credentials.username}"
+                    echo "Password: ${credentials.password}"
                 }
             }
         }
