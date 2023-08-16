@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        label "Jenkins-agent-stronger"
+        label "Jenkins-slave-stronger"
     }
 
     environment {
