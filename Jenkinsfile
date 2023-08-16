@@ -4,10 +4,7 @@ pipeline {
     }
 
     environment {
-        DOCKER_REGISTRY = "https://docker.io" // Added "https" protocol
-        DOCKERHUB_CREDENTIALS = 'docker-hub-credentials'
-        WEB_IMAGE_NAME = "xdarkn/repo:workmission-web-latest"
-        MONGO_IMAGE_NAME = "xdarkn/repo:workmission-mongo-latest"
+        DOCKER_REGISTRY_CREDENTIALS = credentials('docker-hub-credentials')
     }
 
     stages {
@@ -17,28 +14,14 @@ pipeline {
             }
         }
 
-stage('Login') {
-    steps {
-        withCredentials([string(credentialsId: DOCKERHUB_CREDENTIALS, variable: 'DOCKERHUB_CREDENTIALS_PSW')]) {
-            sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-        }
-    }
-}
-
-
-
         stage('Build and Push Docker Images') {
             steps {
                 script {
-                    try {
-                        def webImage = docker.build("${WEB_IMAGE_NAME}", "./app")
-                        def mongoImage = docker.build("${MONGO_IMAGE_NAME}", "./mongodb")
-
+                    docker.withRegistry('https://registry.hub.docker.com', DOCKER_REGISTRY_CREDENTIALS) {
+                        def webImage = docker.build("xdarkn/repo:workmission-web-latest", "./app")
+                        def mongoImage = docker.build("xdarkn/repo:workmission-mongo-latest", "./mongodb")
                         webImage.push()
                         mongoImage.push()
-                    } catch (Exception e) {
-                        currentBuild.result = 'FAILURE'
-                        error("Error building or pushing Docker images: ${e.message}")
                     }
                 }
             }
@@ -47,25 +30,15 @@ stage('Login') {
         stage('Deploy') {
             steps {
                 script {
-                    try {
-                        def webImage = docker.image("${WEB_IMAGE_NAME}")
-                        def mongoImage = docker.image("${MONGO_IMAGE_NAME}")
+                    docker.withRegistry('https://registry.hub.docker.com', DOCKER_REGISTRY_CREDENTIALS) {
+                        def webImage = docker.image("xdarkn/repo:workmission-web-latest")
+                        def mongoImage = docker.image("xdarkn/repo:workmission-mongo-latest")
 
                         sh 'docker-compose down'
                         sh 'docker-compose up -d'
-                    } catch (Exception e) {
-                        currentBuild.result = 'FAILURE'
-                        error("Error deploying Docker images: ${e.message}")
                     }
                 }
             }
-        }
-    }
-
-    post {
-        always {
-            sh 'docker logout'
-            archiveArtifacts artifacts: '**/target/*.jar', allowEmptyArchive: true
         }
     }
 }
