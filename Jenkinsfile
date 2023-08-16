@@ -40,12 +40,16 @@ pipeline {
                         sh 'docker-compose down'
                         sh 'docker-compose up -d'
 
+                        sleep(time: 3, unit: 'SECONDS') // Introduce a 5-second delay
+                        
                         retry(3) {
                             def response = httpRequest(url: 'http://localhost:3000', httpMode: 'GET')
                             echo "Response code: ${response.status}"
 
                             if (response.status == 200) {
                                 echo "Response body:\n${response.getContent()}"
+                                echo "Response code: ${response.status}"
+                                echo "Response body:\n${response.content}"
                             } else {
                                 error "Failed to fetch web page"
                             }
