@@ -39,10 +39,17 @@ pipeline {
 
                         sh 'docker-compose down'
                         sh 'docker-compose up -d'
-                        curl http://localhost:3000
+                        def response = httpRequest(url: 'http://localhost:3000', httpMode: 'GET')
+                        echo "Response code: ${response.status}"
                     }
                 }
             }
+        }
+    }
+post {
+        always {
+            sh 'docker logout'
+            archiveArtifacts artifacts: '**/target/*.jar', allowEmptyArchive: true
         }
     }
 }
