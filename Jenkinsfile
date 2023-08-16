@@ -4,8 +4,8 @@ pipeline {
     }
 
     environment {
-    	dockerImage =''
-    	registry = 'xdarkn/repo'
+        dockerImage =''
+        registry = 'xdarkn/repo'
         registryCredential = 'docker-hub-credentials'
     }
 
@@ -39,14 +39,22 @@ pipeline {
 
                         sh 'docker-compose down'
                         sh 'docker-compose up -d'
+                        
                         def response = httpRequest(url: 'http://localhost:3000', httpMode: 'GET')
                         echo "Response code: ${response.status}"
+                        
+                        if (response.status == 200) {
+                            echo "Response body:\n${response.getContent()}"
+                        } else {
+                            error "Failed to fetch web page"
+                        }
                     }
                 }
             }
         }
     }
-post {
+
+    post {
         always {
             sh 'docker logout'
             archiveArtifacts artifacts: '**/target/*.jar', allowEmptyArchive: true
