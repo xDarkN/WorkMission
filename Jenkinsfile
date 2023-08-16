@@ -5,7 +5,7 @@ pipeline {
 
     environment {
         DOCKER_REGISTRY = "https://docker.io" // Added "https" protocol
-        DOCKER_CREDENTIALS_ID = 'docker-hub-credentials'
+        DOCKERHUB_CREDENTIALS = 'docker-hub-credentials'
         WEB_IMAGE_NAME = "xdarkn/repo:workmission-web-latest"
         MONGO_IMAGE_NAME = "xdarkn/repo:workmission-mongo-latest"
     }
@@ -17,15 +17,12 @@ pipeline {
             }
         }
 
-        stage('Authenticate with Docker Hub') {
+        stage('Login') {
             steps {
-                script {
-                    docker.withRegistry("${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS_ID}") {
-                        // You are now authenticated with Docker Hub for this stage
-                    }
-                }
+                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
             }
         }
+
 
         stage('Build and Push Docker Images') {
             steps {
@@ -64,6 +61,7 @@ pipeline {
 
     post {
         always {
+            sh 'docker logout'
             archiveArtifacts artifacts: '**/target/*.jar', allowEmptyArchive: true
         }
     }
