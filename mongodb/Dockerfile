@@ -1,15 +1,12 @@
+# Use the official MongoDB image as the base
 FROM mongo:latest
 
-# Install the MongoDB client tools
-RUN apt-get update && apt-get install -y wget gnupg
+# Install prerequisites
+RUN apt-get update && apt-get install -y wget
 
-# Import MongoDB public GPG key
-RUN wget -qO - https://www.mongodb.org/static/pgp/server-5.0.asc | apt-key add -
-
-# Add MongoDB repository to sources.list
-RUN echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu $(lsb_release -cs)/mongodb-org/5.0 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-5.0.list
-
-# Install MongoDB client tools
-RUN apt-get update && apt-get install -y mongodb-org-tools
+# Download and install MongoDB tools package
+RUN wget https://repo.mongodb.org/apt/ubuntu/dists/jammy/mongodb-org/5.0/multiverse/binary-amd64/mongodb-org-tools_5.0.4_amd64.deb && \
+    dpkg -i mongodb-org-tools_5.0.4_amd64.deb && \
+    rm mongodb-org-tools_5.0.4_amd64.deb
     
 COPY data.js /docker-entrypoint-initdb.d/
