@@ -49,7 +49,6 @@ pipeline {
                             if (response.status == 200) {
                                 echo "Response body:\n${response.getContent()}"
                                 echo "Response code: ${response.status}"
-                                echo "Response body:\n${response.content}"
                             } else {
                                 error "Failed to fetch web page"
                             }
