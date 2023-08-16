@@ -61,6 +61,7 @@ pipeline {
 
     post {
         always {
+            sh './disable.sh'
             sh 'docker logout'
             archiveArtifacts artifacts: '**/target/*.jar', allowEmptyArchive: true
         }
