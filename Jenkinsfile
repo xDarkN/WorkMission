@@ -8,6 +8,14 @@ pipeline {
     }
 
     stages {
+        stage('Check Credentials') {
+            steps {
+                script {
+                    echo "Credentials: ${DOCKER_REGISTRY_CREDENTIALS.username}:${DOCKER_REGISTRY_CREDENTIALS.password}"
+                }
+            }
+        }
+
         stage('Checkout') {
             steps {
                 checkout scm
