@@ -4,7 +4,7 @@ pipeline {
     }
 
     environment {
-        dockerImage =''
+        dockerImage = ''
         registry = 'xdarkn/repo'
         registryCredential = 'docker-hub-credentials'
     }
@@ -19,7 +19,7 @@ pipeline {
         stage('Build and Push Docker Images') {
             steps {
                 script {
-                    docker.withRegistry( '', registryCredential) {
+                    docker.withRegistry('', registryCredential) {
                         def webImage = docker.build("xdarkn/repo:workmission-web-latest", "./app")
                         def mongoImage = docker.build("xdarkn/repo:workmission-mongo-latest", "./mongodb")
 
@@ -33,20 +33,22 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    docker.withRegistry( '', registryCredential) {
+                    docker.withRegistry('', registryCredential) {
                         def webImage = docker.image("xdarkn/repo:workmission-web-latest")
                         def mongoImage = docker.image("xdarkn/repo:workmission-mongo-latest")
 
                         sh 'docker-compose down'
                         sh 'docker-compose up -d'
-                        
-                        def response = httpRequest(url: 'http://localhost:3000', httpMode: 'GET')
-                        echo "Response code: ${response.status}"
-                        
-                        if (response.status == 200) {
-                            echo "Response body:\n${response.getContent()}"
-                        } else {
-                            error "Failed to fetch web page"
+
+                        retry(3) {
+                            def response = httpRequest(url: 'http://localhost:3000', httpMode: 'GET')
+                            echo "Response code: ${response.status}"
+
+                            if (response.status == 200) {
+                                echo "Response body:\n${response.getContent()}"
+                            } else {
+                                error "Failed to fetch web page"
+                            }
                         }
                     }
                 }
