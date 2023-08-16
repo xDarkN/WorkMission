@@ -1,10 +1,12 @@
 pipeline {
     agent {
-        label "Jenkins-slave-stronger"
+        label "docker-agent"
     }
 
     environment {
-        DOCKER_REGISTRY_CREDENTIALS = credentials('docker-hub-credentials')
+    	dockerImage =''
+    	registry = 'xdarkn/repo'
+        registryCredential = 'docker-hub-credentials'
     }
 
     stages {
@@ -17,9 +19,10 @@ pipeline {
         stage('Build and Push Docker Images') {
             steps {
                 script {
-                    docker.withRegistry('https://registry.hub.docker.com', DOCKER_REGISTRY_CREDENTIALS) {
+                    docker.withRegistry( '', registryCredential) {
                         def webImage = docker.build("xdarkn/repo:workmission-web-latest", "./app")
                         def mongoImage = docker.build("xdarkn/repo:workmission-mongo-latest", "./mongodb")
+
                         webImage.push()
                         mongoImage.push()
                     }
@@ -30,7 +33,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    docker.withRegistry('https://registry.hub.docker.com', DOCKER_REGISTRY_CREDENTIALS) {
+                    docker.withRegistry( '', registryCredential) {
                         def webImage = docker.image("xdarkn/repo:workmission-web-latest")
                         def mongoImage = docker.image("xdarkn/repo:workmission-mongo-latest")
 
