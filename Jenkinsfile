@@ -14,13 +14,11 @@ pipeline {
             steps {
                 script {
                     def registryCredentials = credentials('docker-hub-credentials')
-                    docker.withRegistry('https://registry.hub.docker.com', registryCredentials) {
-                        def webImage = docker.build("xdarkn/repo:workmission-web-latest", "./app")
-                        def mongoImage = docker.build("xdarkn/repo:workmission-mongo-latest", "./mongodb")
+                    def webImage = docker.build("xdarkn/repo:workmission-web-latest", "./app")
+                    def mongoImage = docker.build("xdarkn/repo:workmission-mongo-latest", "./mongodb")
 
-                        webImage.push()
-                        mongoImage.push()
-                    }
+                    webImage.push()
+                    mongoImage.push()
                 }
             }
         }
@@ -29,13 +27,11 @@ pipeline {
             steps {
                 script {
                     def registryCredentials = credentials('docker-hub-credentials')
-                    docker.withRegistry('https://registry.hub.docker.com', registryCredentials) {
-                        def webImage = docker.image("xdarkn/repo:workmission-web-latest")
-                        def mongoImage = docker.image("xdarkn/repo:workmission-mongo-latest")
+                    def webImage = docker.image("xdarkn/repo:workmission-web-latest")
+                    def mongoImage = docker.image("xdarkn/repo:workmission-mongo-latest")
 
-                        sh 'docker-compose down'
-                        sh 'docker-compose up -d'
-                    }
+                    sh 'docker-compose down'
+                    sh 'docker-compose up -d'
                 }
             }
         }
