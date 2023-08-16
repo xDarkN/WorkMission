@@ -4,7 +4,7 @@ pipeline {
     }
 
     environment {
-        DOCKER_REGISTRY = "docker.io" // Change this if using a different registry
+        DOCKER_REGISTRY = "https://docker.io" // Added "https" protocol
         DOCKER_CREDENTIALS_ID = 'docker-hub-credentials'
         WEB_IMAGE_NAME = "xdarkn/repo:workmission-web-latest"
         MONGO_IMAGE_NAME = "xdarkn/repo:workmission-mongo-latest"
