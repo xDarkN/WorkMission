@@ -13,12 +13,17 @@ pipeline {
         stage('Build and Push Docker Images') {
             steps {
                 script {
-                    def registryCredentials = credentials('docker-hub-credentials')
-                    def webImage = docker.build("xdarkn/repo:workmission-web-latest", "./app")
-                    def mongoImage = docker.build("xdarkn/repo:workmission-mongo-latest", "./mongodb")
+                    try {
+                        def registryCredentials = credentials('docker-hub-credentials')
+                        def webImage = docker.build("xdarkn/repo:workmission-web-latest", "./app")
+                        def mongoImage = docker.build("xdarkn/repo:workmission-mongo-latest", "./mongodb")
 
-                    webImage.push()
-                    mongoImage.push()
+                        webImage.push()
+                        mongoImage.push()
+                    } catch (Exception e) {
+                        currentBuild.result = 'FAILURE'
+                        error("Error building or pushing Docker images: ${e.message}")
+                    }
                 }
             }
         }
@@ -26,14 +31,25 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    def registryCredentials = credentials('docker-hub-credentials')
-                    def webImage = docker.image("xdarkn/repo:workmission-web-latest")
-                    def mongoImage = docker.image("xdarkn/repo:workmission-mongo-latest")
+                    try {
+                        def registryCredentials = credentials('docker-hub-credentials')
+                        def webImage = docker.image("xdarkn/repo:workmission-web-latest")
+                        def mongoImage = docker.image("xdarkn/repo:workmission-mongo-latest")
 
-                    sh 'docker-compose down'
-                    sh 'docker-compose up -d'
+                        sh 'docker-compose down'
+                        sh 'docker-compose up -d'
+                    } catch (Exception e) {
+                        currentBuild.result = 'FAILURE'
+                        error("Error deploying Docker images: ${e.message}")
+                    }
                 }
             }
+        }
+    }
+
+    post {
+        always {
+            archiveArtifacts artifacts: '**/target/*.jar', allowEmptyArchive: true
         }
     }
 }
