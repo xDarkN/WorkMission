@@ -92,4 +92,4 @@ If you have any questions or need assistance, please feel free to contact me at 
 
 ![App Screenshot](https://i.imgur.com/coIbgyC.png)
 
-![App Screenshot](https://imgur.com/9CjXy37)
+![App Screenshot](https://i.imgur.com/nF6FRaM.png)
