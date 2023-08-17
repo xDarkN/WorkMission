@@ -8,14 +8,6 @@ services:
       - '3001:3000'
     depends_on:
       - mongo
-  web2:
-    build:
-      context: ./app
-      dockerfile: Dockerfile
-    ports:
-      - '3002:3000'
-    depends_on:
-      - mongo
 
   mongo:
     build:
