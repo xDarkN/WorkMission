@@ -42,27 +42,43 @@ The HTML page will display the number of apples stored in the MongoDB database.
 This repository also demonstrates the setup of a Continuous Integration and Continuous Deployment (CI/CD) pipeline using Jenkins as the CI/CD tool and AWS as the cloud provider. The pipeline automates the deployment of the web application architecture described above.
 
 ### Steps Taken
-* Created 2 EC2 Instances: Jenkins master and Jenkins agent.
 
-Jenkins master: T2.Micro instance running Linux OS with specific security group settings.
-Jenkins agent: T2.XLarge instance with Docker and Docker Compose installed, sharing the same security group as the master.
+1. **Created 2 EC2 Instances: Jenkins master and Jenkins agent.**
 
-* Installed Software:
+   - Jenkins master: Launched a T2.Micro instance running Linux OS.
+     - Applied the following inbound rules to the security group:
+       - Type: Custom TCP, Port: 3000
+       - Type: Custom TCP, Port: 8080
+       - Type: Custom TCP, Port: 27017
+       - Type: SSH, Port: 22
 
-Jenkins, Java, and SSH on the Jenkins master instance.
-SSH, Java, Docker, and Docker Compose on the Jenkins agent instance.
+   - Jenkins agent: Launched a T2.XLarge instance with Docker and Docker Compose installed.
+     - Attached the same security group as the Jenkins master.
 
-* Jenkins Configuration:
+2. **Installed Software:**
 
-Installed required plugins: Amazon EC2 Plugin, Docker, Docker Pipeline, SSH Build Agents Plugin, HTTP Request Plugin.
-Created a new Jenkins agent node named "Jenkins-slave-stronger."
+   - Installed Jenkins, Java, and SSH on the Jenkins master instance.
+   - Installed SSH, Java, Docker, and Docker Compose on the Jenkins agent instance.
 
-* Pipeline Setup:
+3. **Jenkins Configuration:**
 
-Created a pipeline job in Jenkins, linked to a GitHub repository containing the application code.
-Set SCM Schedule to run the Jenkinsfile every 5 minutes (H/5 * * * *).
+   - Installed required plugins: Amazon EC2 Plugin, Docker, Docker Pipeline, SSH Build Agents Plugin, HTTP Request Plugin.
+   - Created a new Jenkins agent node named "Jenkins-slave-stronger."
+   - Configured the agent with the appropriate labels.
+   - Used SSH launch method and provided the agent instance's IP and SSH credentials.
+   - Ensured Java and Docker were installed on the agent.
 
-* Also Created Load Balancer . and simply Modified Jenkins URL to the ALB DNS .
+4. **Pipeline Setup:**
+
+   - Created a pipeline job in Jenkins, linked to a GitHub repository containing the application code.
+   - Set SCM Schedule to run the Jenkinsfile every 5 minutes (H/5 * * * *).
+
+5. **Load Balancer Configuration:**
+
+   - Created an Application Load Balancer (ALB) on AWS.
+   - Added listeners to the ALB for the required ports (e.g., 8080).
+   - Linked the ALB to the Jenkins master EC2 instance.
+   - Modified the Jenkins URL to use the ALB DNS.
 
 ### Contact
 If you have any questions or need assistance, please feel free to contact me at :  
