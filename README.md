@@ -16,7 +16,6 @@ The architecture consists of the following components:
 - NodeJS Web Server Container
 - MongoDB Container
 - HTML Page with Apple Count
-- IaC Scripts for Provisioning and Deployment
 
 ## Getting Started
 
