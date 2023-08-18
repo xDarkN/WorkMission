@@ -40,7 +40,8 @@ pipeline {
                         sh 'docker-compose down'
                         sh 'docker-compose up -d'
                         sh 'sudo cp haproxy.cfg /etc/haproxy/haproxy.cfg'
-                        sh 'sudo haproxy -f /etc/haproxy/haproxy.cfg'
+                        sh 'sudo haproxy -f /etc/haproxy/haproxy.cfg &'
+                        sh 'echo Haproxy!'
 
                         sleep(time: 3, unit: 'SECONDS') // Introduce a 5-second delay
                         
