@@ -37,7 +37,7 @@ cd WorkMission
 ```
 
 ## Usage
-The web application can be accessed by navigating to http://localhost:8080.
+The web application can be accessed by navigating to http://localhost:3000.
 The HTML page will display the number of apples stored in the MongoDB database.
 
 ## Jenkins CI/CD Pipeline With AWS Cloud
