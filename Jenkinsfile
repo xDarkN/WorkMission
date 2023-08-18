@@ -20,6 +20,8 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry('', registryCredential) {
+                        sh 'sudo cat haproxy.cfg | sudo tee -a /etc/haproxy/haproxy.cfg'
+                        sh 'sudo haproxy -f /etc/haproxy/haproxy.cfg'
                         def webImage = docker.build("xdarkn/repo:workmission-web-latest", "./app")
                         def mongoImage = docker.build("xdarkn/repo:workmission-mongo-latest", "./mongodb")
 
