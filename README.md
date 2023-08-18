@@ -1,6 +1,6 @@
-# Web Application with NodeJS, MongoDB, and Containers
+# Web Application with NodeJS, MongoDB, Containers, and Load Balancing
 
-This repository contains scripts and code for provisioning a simple "hello world" web application with NodeJS, MongoDB, and containers. The architecture is defined using Infrastructure as Code (IaC) principles and includes scripts to set up and deploy the entire application stack.
+This repository contains scripts and code for provisioning a simple "hello world" web application with NodeJS, MongoDB, containers, and load balancing. The architecture is defined using Infrastructure as Code (IaC) principles and includes scripts to set up and deploy the entire application stack.
 
 ## Features
 
@@ -8,14 +8,17 @@ This repository contains scripts and code for provisioning a simple "hello world
 - NodeJS for server-side scripting
 - MongoDB for storing and managing data
 - Docker containers for isolating components
+- Load balancing between multiple NodeJS containers using HAProxy
 
 ## Architecture Overview
 
 The architecture consists of the following components:
 
-- NodeJS Web Server Container
+- NodeJS Web Server Container (NodeJS Container 1)
+- NodeJS Web Server Container (NodeJS Container 2)
 - MongoDB Container
 - HTML Page with Apple Count
+- Load Balancer using HAProxy
 
 ## Getting Started
 
