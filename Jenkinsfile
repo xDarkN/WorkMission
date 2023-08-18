@@ -20,8 +20,6 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry('', registryCredential) {
-                        sh 'sudo cp haproxy.cfg /etc/haproxy/haproxy.cfg'
-                        sh 'sudo haproxy -f /etc/haproxy/haproxy.cfg'
                         def webImage = docker.build("xdarkn/repo:workmission-web-latest", "./app")
                         def mongoImage = docker.build("xdarkn/repo:workmission-mongo-latest", "./mongodb")
 
@@ -41,6 +39,8 @@ pipeline {
 
                         sh 'docker-compose down'
                         sh 'docker-compose up -d'
+                        sh 'sudo cp haproxy.cfg /etc/haproxy/haproxy.cfg'
+                        sh 'sudo haproxy -f /etc/haproxy/haproxy.cfg'
 
                         sleep(time: 3, unit: 'SECONDS') // Introduce a 5-second delay
                         
