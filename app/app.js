@@ -16,11 +16,15 @@ const Apples = mongoose.model('Apples', {
   rating: Number,
 });
 
-app.get('/', async (req, res) => {
+app.get('/*', async (req, res) => {
   try {
     const apples = await Apples.findOne({ name: 'apples' });
     console.log('Apples:', apples);
-    res.send(apples ? `Number of apples: ${apples.qty}` : 'Apples not found.');
+    if (apples) {
+      res.send(`Served By ${port}\nNumber of apples: ${apples.qty}`);
+    } else {
+      res.send('Apples not found.');
+    }
   } catch (error) {
     console.error('Error:', error);
     res.status(500).send('An error occurred.');
