@@ -64,13 +64,7 @@ pipeline {
 post {
     success {
         script {
-            def slackMessage = "Build successful: ${env.JOB_NAME} - ${env.BUILD_NUMBER}\n${env.BUILD_URL}"
-            def slackUrl = 'https://hooks.slack.com/services/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'
             sh """
-            curl -X POST -H 'Content-type: application/json' \
-            --data '{"text":"${slackMessage}"}' \
-            ${slackUrl}
-            """
             sh './disable.sh'
             sh 'docker logout'
             archiveArtifacts artifacts: '**/target/*.jar', allowEmptyArchive: true
