@@ -62,13 +62,22 @@ pipeline {
         }
     }
 post {
-    success {
-        script {
-            sh """
+        success {
+            script {
+            sh ""
             sh './disable.sh'
             sh 'docker logout'
             archiveArtifacts artifacts: '**/target/*.jar', allowEmptyArchive: true
+                def slackMessage = "Build successful! :white_check_mark:"
+                slackSend(color: 'good', message: slackMessage)
+            }
+        }
+        failure {
+            script {
+                def slackMessage = "Build failed! :x:"
+                slackSend(color: 'danger', message: slackMessage)
             }
         }
     }
 }
+
